@@ -14,10 +14,7 @@ namespace AccountRegistrationn
 {
     public partial class FrmRegistration : Form
     {
-        private string _FullName;
-        private int _Age;
-        private long _ContactNo;
-        private long _StudentNo;
+        
 
         public FrmRegistration()
         {
@@ -69,32 +66,51 @@ namespace AccountRegistrationn
 
         private void nxtbtn_Click(object sender, EventArgs e)
         {
-            StudentInformationClass.SetFullName = FullName(lntxt.Text, fntxt.Text, mntxt.Text);
-            StudentInformationClass.SetStudentNo = StudentNumber(studtxt.Text);
-            StudentInformationClass.SetProgram = programcombo.Text;
-            StudentInformationClass.SetGender = gendercombo.Text;
-            StudentInformationClass.SetContactNo = ContactNo(cntxt.Text);
-            StudentInformationClass.SetAge = Age(agetxt.Text);
-            StudentInformationClass.SetBirthday = dtpicker.Value.ToString("yyyy");
-
-
-            FrmConfirm confirm = new FrmConfirm();
-
-            if (confirm.ShowDialog() == DialogResult.OK)
+            try
             {
+                StudentInformationClass studentInfo = new StudentInformationClass();
 
-                lntxt.Clear();
-                fntxt.Clear();
-                mntxt.Clear();
-                agetxt.Clear();
-                cntxt.Clear();
-                studtxt.Clear();
+                StudentInformationClass.SetFullName = studentInfo.FullName(lntxt.Text, fntxt.Text, mntxt.Text);
+                StudentInformationClass.SetStudentNo = studentInfo.StudentNumber(studtxt.Text);
+                StudentInformationClass.SetProgram = programcombo.Text;
+                StudentInformationClass.SetGender = gendercombo.Text;
+                StudentInformationClass.SetContactNo = studentInfo.ContactNo(cntxt.Text);
+                StudentInformationClass.SetAge = studentInfo.Age(agetxt.Text);
+                StudentInformationClass.SetBirthday = dtpicker.Value.ToString("yyyy");
 
-                programcombo.SelectedIndex = -1;
+                FrmConfirm confirm = new FrmConfirm();
+
+                if (confirm.ShowDialog() == DialogResult.OK)
+                {
+                    lntxt.Clear();
+                    fntxt.Clear();
+                    mntxt.Clear();
+                    agetxt.Clear();
+                    cntxt.Clear();
+                    studtxt.Clear();
+
+                    programcombo.SelectedIndex = -1;
+                }
+            }
+            catch (OverflowException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
-        public static class StudentInformationClass
+        public class StudentInformationClass
         {
+            private string _FullName;
+            private int _Age;
+            private long _ContactNo;
+            private long _StudentNo;
 
             public static long SetStudentNo = 0;
             public static long SetContactNo = 0;
