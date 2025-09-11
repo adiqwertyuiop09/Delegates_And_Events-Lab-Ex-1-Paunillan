@@ -5,62 +5,87 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AccountRegistrationn
 {
     public partial class FrmRegistration : Form
     {
+        private string _FullName;
+        private int _Age;
+        private long _ContactNo;
+        private long _StudentNo;
+
         public FrmRegistration()
         {
             InitializeComponent();
 
-            programcombo.Items.Add("BS Computer Science");
-            programcombo.Items.Add("BS Information Technology");
-            programcombo.Items.Add("BS Information Systems");
-            programcombo.Items.Add("BS Software Engineering");
-            programcombo.Items.Add("BS Data Science");
-            programcombo.Items.Add("BS Cybersecurity");
-            programcombo.Items.Add("BS Multimedia Arts");
-            programcombo.Items.Add("BS Game Development");
-            programcombo.Items.Add("BS Electronics Engineering");
-            programcombo.Items.Add("BS Computer Engineering");
-            programcombo.Items.Add("BS Civil Engineering");
-            programcombo.Items.Add("BS Mechanical Engineering");
-            programcombo.Items.Add("BS Architecture");
-            programcombo.Items.Add("BS Nursing");
-            programcombo.Items.Add("BS Accountancy");
+            string[] ListOfProgram = new string[]
+             {
+                "BS Computer Science",
+                "BS Information Technology",
+                "BS Information Systems",
+                "BS Software Engineering",
+                "BS Data Science",
+                "BS Cybersecurity",
+                "BS Multimedia Arts",
+                "BS Game Development",
+                "BS Electronics Engineering",
+                "BS Computer Engineering",
+                "BS Civil Engineering",
+                "BS Mechanical Engineering",
+                "BS Architecture",
+                "BS Nursing",
+                "BS Accountancy"
+             };
+
+            for (int i = 0; i < 15; i++)
+            {
+                programcombo.Items.Add(ListOfProgram[i]);
+            }
+
+            string[] ListOfGender = new string[]
+            {
+                "Male",
+                "Female"
+            };
+
+            for (int i = 0; i < 2; i++)
+            {
+                gendercombo.Items.Add(ListOfGender[i]);
+            }
+
 
             nxtbtn.FlatStyle = FlatStyle.Flat;
-            nxtbtn.BackColor = Color.FromArgb(0, 120, 215); 
-            nxtbtn.ForeColor = Color.White; 
-            nxtbtn.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 150, 255); 
-            nxtbtn.FlatAppearance.BorderSize = 0; 
-            nxtbtn.Font = new Font(nxtbtn.Font, FontStyle.Bold); 
+            nxtbtn.BackColor = Color.FromArgb(0, 120, 215);
+            nxtbtn.ForeColor = Color.White;
+            nxtbtn.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 150, 255);
+            nxtbtn.FlatAppearance.BorderSize = 0;
+            nxtbtn.Font = new Font(nxtbtn.Font, FontStyle.Bold);
         }
 
         private void nxtbtn_Click(object sender, EventArgs e)
         {
-            StudentInfoClass.LastName = lntxt.Text.ToString();
-            StudentInfoClass.FirstName = fntxt.Text.ToString();
-            StudentInfoClass.MiddleName = mntxt.Text.ToString();
-            StudentInfoClass.Address = addressrtxt.Text.ToString();
-            StudentInfoClass.Program = programcombo.Text.ToString();
+            StudentInformationClass.SetFullName = FullName(lntxt.Text, fntxt.Text, mntxt.Text);
+            StudentInformationClass.SetStudentNo = StudentNumber(studtxt.Text);
+            StudentInformationClass.SetProgram = programcombo.Text;
+            StudentInformationClass.SetGender = gendercombo.Text;
+            StudentInformationClass.SetContactNo = ContactNo(cntxt.Text);
+            StudentInformationClass.SetAge = Age(agetxt.Text);
+            StudentInformationClass.SetBirthday = dtpicker.Value.ToString("yyyy");
 
-            StudentInfoClass.Age = Convert.ToInt64(agetxt.Text);
-            StudentInfoClass.ContactNo = Convert.ToInt64(cntxt.Text);
-            StudentInfoClass.StudentNo = Convert.ToInt64(studtxt.Text);
 
-            FrmConfirm confirm = new FrmConfirm();          
+            FrmConfirm confirm = new FrmConfirm();
 
             if (confirm.ShowDialog() == DialogResult.OK)
             {
-              
+
                 lntxt.Clear();
                 fntxt.Clear();
                 mntxt.Clear();
-                addressrtxt.Clear();
                 agetxt.Clear();
                 cntxt.Clear();
                 studtxt.Clear();
@@ -68,67 +93,60 @@ namespace AccountRegistrationn
                 programcombo.SelectedIndex = -1;
             }
         }
-    }
-
-    public class StudentInfoClass{
-        public delegate long DelegateNumber(long number);
-        public delegate string DelegateText(string txt);
-
-        public static String FirstName = "";
-        public static String LastName = "";
-        public static String MiddleName = "";
-        public static String Address = "";
-        public static String Program = "";
-
-        public static long Age = 0;
-        public static long ContactNo = 0;
-        public static long StudentNo = 0;
-
-        public static String GetFirstName(string FirstName) { 
-            StudentInfoClass.FirstName = FirstName;
-            return StudentInfoClass.FirstName;
-        }
-
-        public static String GetLastName(string LastName)
+        public static class StudentInformationClass
         {
-            StudentInfoClass.LastName = LastName;
-            return StudentInfoClass.LastName;
+
+            public static long SetStudentNo = 0;
+            public static long SetContactNo = 0;
+            public static int SetAge = 0;
+
+            public static string SetProgram = "";
+            public static string SetGender = "";
+            public static string SetBirthday = "";
+            public static string SetFullName = "";
+
+            public long StudentNumber(string studNum)
+            {
+
+                _StudentNo = long.Parse(studNum);
+
+                return _StudentNo;
+            }
+
+            public long ContactNo(string Contact)
+            {
+                if (Regex.IsMatch(Contact, @"^[0-9]{10,11}$"))
+                {
+                    _ContactNo = long.Parse(Contact);
+                }
+
+                return _ContactNo;
+            }
+
+            public string FullName(string LastName, string FirstName, string MiddleInitial)
+            {
+                if (Regex.IsMatch(LastName, @"^[a-zA-Z]+$") || Regex.IsMatch(FirstName, @"^[a-zA-Z]+$") || Regex.IsMatch(MiddleInitial, @"^[a-zA-Z]+$"))
+                {
+                    _FullName = LastName + ", " + FirstName + ", " + MiddleInitial;
+                }
+
+                return _FullName;
+            }
+
+            public int Age(string age)
+            {
+                if (Regex.IsMatch(age, @"^[0-9]{1,3}$"))
+                {
+                    _Age = Int32.Parse(age);
+                }
+
+                return _Age;
+            }
+
+            }
+
         }
 
-        public static String GetMiddleName(string MiddleName)
-        {
-            StudentInfoClass.MiddleName = MiddleName;
-            return StudentInfoClass.MiddleName;
-        }
+     }
 
-        public static String GetAddress(string Address)
-        {
-            StudentInfoClass.Address = Address;
-            return StudentInfoClass.Address;
-        }
-
-        public static String GetProgram(string Program)
-        {
-            StudentInfoClass.Program = Program;
-            return StudentInfoClass.Program;
-        }
-
-        public static long GetAge(long Age)
-        {
-            StudentInfoClass.Age = Age;
-            return StudentInfoClass.Age;
-        }
-
-        public static long GetContactNo(long ContactNo)
-        {
-            StudentInfoClass.ContactNo = ContactNo;
-            return StudentInfoClass.ContactNo;
-        }
-
-        public static long GetStudentNo(long StudentNo)
-        {
-            StudentInfoClass.StudentNo = StudentNo;
-            return StudentInfoClass.StudentNo;
-        }
-    }
-}
+    
