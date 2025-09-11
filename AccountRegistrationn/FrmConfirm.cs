@@ -24,14 +24,13 @@ namespace AccountRegistrationn
            
             InitializeComponent();
 
-            studlbl.Text = StudentInformationClass.SetStudentNo.ToString();
-            namelbl.Text = StudentInformationClass.SetFullName;
-            programlbl.Text = StudentInformationClass.SetProgram;
-            birthdaylbl.Text = StudentInformationClass.SetBirthday;
-            genderlbl.Text = StudentInformationClass.SetGender;
-            cnlbl.Text = StudentInformationClass.SetContactNo.ToString();
-            agelbl.Text = StudentInformationClass.SetAge.ToString();
-
+            studlbl.Text = FrmRegistration.StudentInformationClass.SetStudentNo.ToString();
+            namelbl.Text = FrmRegistration.StudentInformationClass.SetFullName;
+            programlbl.Text = FrmRegistration.StudentInformationClass.SetProgram;
+            birthdaylbl.Text = FrmRegistration.StudentInformationClass.SetBirthday;
+            genderlbl.Text = FrmRegistration.StudentInformationClass.SetGender;
+            cnlbl.Text = FrmRegistration.StudentInformationClass.SetContactNo.ToString();
+            agelbl.Text = FrmRegistration.StudentInformationClass.SetAge.ToString();
         }
 
         private void submitbtn_Click(object sender, EventArgs e)

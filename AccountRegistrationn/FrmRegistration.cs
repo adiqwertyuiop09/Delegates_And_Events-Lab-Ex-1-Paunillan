@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace AccountRegistrationn
 
         public FrmRegistration()
         {
+
             InitializeComponent();
 
             string[] ListOfProgram = new string[]
@@ -68,6 +70,8 @@ namespace AccountRegistrationn
         {
             try
             {
+                string studdb = "Server=LAPTOP-SFLC0K1H\\SQLEXPRESS;Database=StudDB;Trusted_Connection=True;";
+
                 StudentInformationClass studentInfo = new StudentInformationClass();
 
                 StudentInformationClass.SetFullName = studentInfo.FullName(lntxt.Text, fntxt.Text, mntxt.Text);
@@ -77,6 +81,32 @@ namespace AccountRegistrationn
                 StudentInformationClass.SetContactNo = studentInfo.ContactNo(cntxt.Text);
                 StudentInformationClass.SetAge = studentInfo.Age(agetxt.Text);
                 StudentInformationClass.SetBirthday = dtpicker.Value.ToString("yyyy");
+
+                using (SqlConnection sql = new SqlConnection(studdb))
+                {
+                    sql.Open();
+
+                    string query = @"INSERT INTO Student 
+                            (Program, LastName, FirstName, MiddleName, Age, Birthday, ContactNo, Gender, FullName)
+                             VALUES 
+                            (@Program, @LastName, @FirstName, @MiddleName, @Age, @Birthday, @ContactNo, @Gender, @FullName)";
+
+                    using (SqlCommand cmd = new SqlCommand(query, sql))
+                    {
+                        cmd.Parameters.AddWithValue("@Program", StudentInformationClass.SetProgram);
+                        cmd.Parameters.AddWithValue("@LastName", lntxt.Text);
+                        cmd.Parameters.AddWithValue("@FirstName", fntxt.Text);
+                        cmd.Parameters.AddWithValue("@MiddleName", mntxt.Text);
+                        cmd.Parameters.AddWithValue("@Age", StudentInformationClass.SetAge);
+                        cmd.Parameters.AddWithValue("@Birthday", StudentInformationClass.SetBirthday);
+                        cmd.Parameters.AddWithValue("@ContactNo", StudentInformationClass.SetContactNo);
+                        cmd.Parameters.AddWithValue("@Gender", StudentInformationClass.SetGender);
+                        cmd.Parameters.AddWithValue("@FullName", StudentInformationClass.SetFullName);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
 
                 FrmConfirm confirm = new FrmConfirm();
 
